@@ -1,7 +1,7 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb.springboot.autoconfig
+package assaabloy.globalsolutions.axon.extension.dynamodb.springboot.autoconfig
 
-import com.assaabloy.globalsolutions.axon.extension.dynamodb.DynamoStorageEngine
-import com.assaabloy.globalsolutions.axon.extension.dynamodb.DynamoTokenStore
+import assaabloy.globalsolutions.axon.extension.dynamodb.DynamoStorageEngine
+import assaabloy.globalsolutions.axon.extension.dynamodb.DynamoTokenStore
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.axonframework.common.jpa.EntityManagerProvider
 import org.axonframework.common.transaction.TransactionManager

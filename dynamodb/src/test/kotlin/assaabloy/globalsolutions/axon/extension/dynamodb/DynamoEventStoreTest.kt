@@ -1,4 +1,4 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb
+package assaabloy.globalsolutions.axon.extension.dynamodb
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper

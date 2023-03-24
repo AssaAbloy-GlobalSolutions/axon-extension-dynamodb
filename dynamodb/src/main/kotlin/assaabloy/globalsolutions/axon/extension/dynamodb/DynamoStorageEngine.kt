@@ -1,4 +1,4 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb
+package assaabloy.globalsolutions.axon.extension.dynamodb
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper

@@ -1,4 +1,4 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb
+package assaabloy.globalsolutions.axon.extension.dynamodb
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

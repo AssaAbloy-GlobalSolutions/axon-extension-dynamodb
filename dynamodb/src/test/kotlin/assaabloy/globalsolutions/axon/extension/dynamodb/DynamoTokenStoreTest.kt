@@ -1,6 +1,6 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb
+package assaabloy.globalsolutions.axon.extension.dynamodb
 
-import com.assaabloy.globalsolutions.axon.extension.dynamodb.DynamoTableInitializer.Companion.AXON_STORAGE
+import assaabloy.globalsolutions.axon.extension.dynamodb.DynamoTableInitializer.Companion.AXON_STORAGE
 import org.axonframework.eventhandling.GapAwareTrackingToken
 import org.axonframework.eventhandling.GlobalSequenceTrackingToken
 import org.axonframework.eventhandling.tokenstore.UnableToClaimTokenException

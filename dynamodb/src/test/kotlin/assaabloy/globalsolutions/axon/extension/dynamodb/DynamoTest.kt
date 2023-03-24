@@ -1,4 +1,4 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb
+package assaabloy.globalsolutions.axon.extension.dynamodb
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

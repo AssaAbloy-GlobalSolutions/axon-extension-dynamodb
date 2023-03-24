@@ -1,4 +1,4 @@
-package com.assaabloy.globalsolutions.axon.extension.dynamodb.springboot.autoconfig
+package assaabloy.globalsolutions.axon.extension.dynamodb.springboot.autoconfig
 
 import jakarta.validation.constraints.NotNull
 import org.springframework.boot.context.properties.ConfigurationProperties
