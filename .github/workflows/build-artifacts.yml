@@ -4,7 +4,7 @@ on:
 
 jobs:
   build:
-    name: release sift-cli.jar
+    name: maven build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -14,5 +14,5 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'maven'
-      - name: build sift cli
+      - name: build axon-extension-dynamodb
         run: mvn -B -P clean package
