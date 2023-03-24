@@ -1,6 +1,6 @@
 name: 🏗 axon dynamodb extensions
 on:
-  workflow_dispatch
+  push
 
 jobs:
   build:
