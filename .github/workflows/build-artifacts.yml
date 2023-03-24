@@ -1,0 +1,18 @@
+name: 🏗 axon dynamodb extensions
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    name: release sift-cli.jar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup jdk
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'maven'
+      - name: build sift cli
+        run: mvn -B -P clean package
