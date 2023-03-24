@@ -12,16 +12,10 @@ open class DynamoTest {
 
     companion object {
         @RegisterExtension
-        val dynamo = DynamoTestExtension()
+        val dynamo = DynamoTestExtension(DynamoTableInitializer::initTables)
     }
 
     val client: DynamoDbClient = dynamo.client
-
-    init {
-        System.setProperty("aws.accessKeyId", "kid")
-        System.setProperty("aws.secretAccessKey", "sak")
-        System.setProperty("aws.sessionToken", "st")
-    }
 
     @BeforeEach
     internal fun setUp() {
