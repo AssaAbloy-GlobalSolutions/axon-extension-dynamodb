@@ -20,12 +20,14 @@ import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.AccountBala
 import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.BankAccountCreatedEvent
 import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.MoneyAddedEvent
 import mu.KLogging
+import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.eventhandling.EventMessage
 import org.axonframework.queryhandling.QueryHandler
 import org.springframework.stereotype.Component
 
 @Component
+@ProcessingGroup("bank")
 class BankEventHandler {
 
     companion object : KLogging()

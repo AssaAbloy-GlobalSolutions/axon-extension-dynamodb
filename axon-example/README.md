@@ -1,25 +1,24 @@
-# Mongo Axon Springboot Example
+# Mongo Dynamo Springboot Example
 
-This is an example SpringBoot application using the Mongo Axon extension. It uses Mongo as the Event- and Token Store.
+This is an example SpringBoot application using the Mongo DynamoDB extension. It uses DynamoDB as the Event- and Token Store.
 
-> Although Mongodb might be a good fit for it, we have encountered some inefficiencies in regards to the Mongo Event
-> Store implementation that you can read more about [here](https://docs.axoniq.io/reference-guide/extensions/mongo)
+![overview](application-overview.png)
+
+This example project has been adapted from the example project in axon [mongo extension][mongo extension]
 
 ## How to run
 
 ### Preparation
 
-You will need `docker` and `docker-compose` to run this example.
+You will need `docker`.
 
-Please run:
+To start a local instance of DynamoDB: 
 
 ```bash
-docker-compose -f ./mongo-axon-example/docker-compose.yaml up -d
+docker run -p 8000:8000 amazon/dynamodb-local -jar DynamoDBLocal.jar -sharedDb 
 ```
 
-This will start Mongo with default values.
-
-Now build the application by running:
+Next, run the the application:
 
 ```bash
 mvn clean package -f ./mongo-axon-example
@@ -32,3 +31,6 @@ You can start the application by running `java -jar ./mongo-axon-example/target/
 You can access the mongo-express UI
 on [http://localhost:8081/db/axonframework/](http://localhost:8081/db/axonframework/)
 where you can see the tables used by axon and inspect events, tokens and snapshots.
+
+
+ [mongo-extension]: https://github.com/AxonFramework/extension-mongo
