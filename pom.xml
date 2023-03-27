@@ -4,7 +4,6 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- TODO: how do we name this-->
     <groupId>assaabloy.globalsolutions.axon.dynamodb</groupId>
     <artifactId>axon-dynamodb-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
