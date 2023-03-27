@@ -11,7 +11,7 @@ application with the Axon Framework DynamoDB Extension.
 
 
 ## License
-This work is licensed under MIT License except the cross platform reflection code, which has been sourced from [axon-mongo-example]
+This work is licensed under MIT License except the example project, which has been sourced from [axon-mongo-example][axon-mongo-example]
 and falls under the Apache License 2.0. These files can be identified by the Apache License header. Apache 2.0 license
 can be found under [axon-example/LICENSE.axon](axon-example/LICENSE.axon).
 
