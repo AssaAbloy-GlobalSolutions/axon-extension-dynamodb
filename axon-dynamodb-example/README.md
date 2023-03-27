@@ -1,4 +1,4 @@
-# Mongo Dynamo Springboot Example
+# Axon DynamoDb Extension Springboot Example
 
 This is an example SpringBoot application using the Mongo DynamoDB extension. It uses DynamoDB as the Event- and Token Store.
 
