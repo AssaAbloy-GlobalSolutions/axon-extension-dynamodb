@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    ports:
+      - 8000:8000
+
+  aws-cli:
+    image: amazon/aws-cli
+    depends_on:
+      - dynamodb
+    working_dir: /dynamo
+    environment:
+      - AWS_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_SESSION_TOKEN=local
+    volumes:
+      - ./create-tables.sh:/dynamo/create-tables.sh
+    entrypoint: sh -c "./create-tables.sh"

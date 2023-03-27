@@ -46,10 +46,10 @@ fun main(args: Array<String>) {
 @EnableScheduling
 class DynamoDbAxonExampleApplication {
 
-    @Autowired
-    fun initializeTables(dynamoDbClient: DynamoDbClient) {
-        DynamoTableInitializer.initTables(dynamoDbClient)
-    }
+//    @Autowired
+//    fun initializeTables(dynamoDbClient: DynamoDbClient) {
+//        DynamoTableInitializer.initTables(dynamoDbClient)
+//    }
 
     @Bean
     fun registerKotlinModule(): Module = KotlinModule
@@ -69,13 +69,13 @@ class DynamoDbDemoConfiguration {
     fun dynamoClient(
         @Value("\${amazon.dynamodb.endpoint}")
         dynamoEndpoint: String,
-        @Value("\${amazon.aws.region}")
+        @Value("\${aws.region}")
         region: String,
     ): DynamoDbClient {
         // Placeholder values required by dynamodb client
-        System.setProperty("aws.accessKeyId", "kid")
-        System.setProperty("aws.secretAccessKey", "sak")
-        System.setProperty("aws.sessionToken", "st")
+        System.setProperty("aws.accessKeyId", "local")
+        System.setProperty("aws.secretAccessKey", "local")
+        System.setProperty("aws.sessionToken", "local")
 
         return DynamoDbClient.builder()
             .region(Region.regions().first { it.id() == region })
