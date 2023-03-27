@@ -10,6 +10,50 @@ serving as an EventStorageEngine (for use with an EventStore) and TokenStore. En
 application with the Axon Framework DynamoDB Extension.
 
 
+## Usage
+
+Dependencies
+
+```xml
+<dependency>
+    <groupId>assaabloy.globalsolutions.axon.dynamodb</groupId>
+    <artifactId>axon-dynamodb-spring-boot-autoconfigure</artifactId>
+    <version>${axon-dynamodb.version}</version>
+</dependency>
+```
+
+Or with gradle:
+
+```groovy
+implementation 'assaabloy.globalsolutions.axon.dynamodb:axon-dynamodb-spring-boot-autoconfigure:${project.version}'
+```
+
+Spring Boot application configuration:
+
+```kotlin
+@Bean
+fun dynamoClient(
+    @Value("\${amazon.dynamodb.endpoint}")
+    dynamoEndpoint: String,
+    @Value("\${amazon.aws.region}")
+    region: String,
+): DynamoDbClient {
+    // Placeholder values for connecting to a locally running dynamodb container; 
+    // these properties are typically set with `-Daws.accessKeyId=... -DsecretAccessKey=...`
+    System.setProperty("aws.accessKeyId", "kid")
+    System.setProperty("aws.secretAccessKey", "sak")
+    System.setProperty("aws.sessionToken", "st")
+
+    return DynamoDbClient.builder()
+        .region(Region.regions().first { it.id() == region })
+        .endpointOverride(URI.create(dynamoEndpoint))
+        .build()
+}
+```
+
+This extension does not create its own DynamodDB tables. This is expected to be handled by the user.
+Refer to the test class `DynamoTableInitializer` for an example of how to create the tables.
+
 ## License
 This work is licensed under MIT License except the example project, which has been sourced from [axon-mongo-example][axon-mongo-example]
 and falls under the Apache License 2.0. These files can be identified by the Apache License header. Apache 2.0 license
