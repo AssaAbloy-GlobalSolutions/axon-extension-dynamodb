@@ -293,7 +293,7 @@
         <profile>
             <id>axon-example</id>
             <modules>
-                <module>axon-example</module>
+                <module>axon-dynamodb-example</module>
             </modules>
         </profile>
     </profiles>

@@ -19,3 +19,13 @@ aws --endpoint-url "http://dynamodb:8000" dynamodb update-table \
         "[{\"Create\":{\"IndexName\": \"events_gsi\",\"KeySchema\":[{\"AttributeName\":\"gsh\",\"KeyType\":\"HASH\"}, {\"AttributeName\":\"gsl\",\"KeyType\":\"RANGE\"}], \
          \"ProvisionedThroughput\": {\"ReadCapacityUnits\": 10, \"WriteCapacityUnits\": 5}, \
         \"Projection\":{\"ProjectionType\":\"ALL\"}}}]"
+
+aws --endpoint-url "http://dynamodb:8000" dynamodb create-table \
+    --table-name balance_projection \
+    --attribute-definitions \
+        AttributeName=aid,AttributeType=S \
+    --key-schema \
+        AttributeName=aid,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --table-class STANDARD

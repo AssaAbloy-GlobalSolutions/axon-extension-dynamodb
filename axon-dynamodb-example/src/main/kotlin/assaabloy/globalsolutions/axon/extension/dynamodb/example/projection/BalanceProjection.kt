@@ -20,7 +20,7 @@ import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.AccountBala
 import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.BankAccountCreatedEvent
 import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.MoneyDepositedEvent
 import assaabloy.globalsolutions.axon.extension.dynamodb.example.api.MoneyWithdrawnEvent
-import assaabloy.globalsolutions.axon.extension.dynamodb.long
+import assaabloy.globalsolutions.axon.extension.dynamodb.nullableLong
 import mu.KLogging
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -58,7 +58,7 @@ class BalanceProjection(val balanceRepository: BalanceRepository) {
     }
 
     @QueryHandler
-    fun on(query: AccountBalanceQuery): Long {
+    fun on(query: AccountBalanceQuery): Long? {
         return balanceRepository.checkBalance(query.bankAccountId)
     }
 
@@ -120,14 +120,14 @@ class DynamoBalanceRepository(
         }
     }
 
-    override fun checkBalance(bankAccountId: String): Long = client.getItem {
-            it.tableName(tableName)
-                .key(
-                    mapOf(
-                        this.bankAccountId.valuePair(bankAccountId)
-                    )
+    override fun checkBalance(bankAccountId: String): Long? = client.getItem {
+        it.tableName(tableName)
+            .key(
+                mapOf(
+                    this.bankAccountId.valuePair(bankAccountId)
                 )
-        }.item()?.get("b").long()
+            )
+    }.item()?.get("b").nullableLong()
 
 }
 
@@ -136,5 +136,5 @@ interface BalanceRepository {
     fun createBankAccount(bankAccountId: String)
     fun depositMoney(bankAccountId: String, amount: Long)
     fun withdrawMoney(bankAccountId: String, amount: Long)
-    fun checkBalance(bankAccountId: String): Long
+    fun checkBalance(bankAccountId: String): Long?
 }
