@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>assaabloy.globalsolutions.axon.dynamodb</groupId>
+        <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
         <artifactId>axon-dynamodb-parent</artifactId>
         <version>0.9.0-SNAPSHOT</version>
     </parent>
@@ -44,7 +44,7 @@
             <version>${axon.version}</version>
         </dependency>
         <dependency>
-            <groupId>assaabloy.globalsolutions.axon.dynamodb</groupId>
+            <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
             <artifactId>axon-dynamodb</artifactId>
             <version>0.9.0-SNAPSHOT</version>
         </dependency>

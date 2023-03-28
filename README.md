@@ -24,7 +24,7 @@ Maven:
 
 ```xml
 <dependency>
-    <groupId>assaabloy.globalsolutions.axon.dynamodb</groupId>
+    <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
     <artifactId>axon-dynamodb-spring-boot-autoconfigure</artifactId>
     <version>${axon-dynamodb.version}</version>
 </dependency>
