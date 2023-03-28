@@ -1,1 +1,1 @@
-assaabloy.globalsolutions.axon.extension.dynamodb.springboot.autoconfig.DynamoDbAutoConfiguration
+com.assaabloyglobalsolutions.axon.extension.dynamodb.springboot.autoconfig.DynamoDbAutoConfiguration
