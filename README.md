@@ -12,7 +12,15 @@ application with the Axon Framework DynamoDB Extension.
 
 ## Usage
 
-Dependencies
+### Prerequisites
+
+This extension require Spring Boot 3, and therefore a java 17 runtime.
+
+### Dependencies
+
+To use the Axon DynamoDB Extension, add the following dependency to your project.
+
+Maven:
 
 ```xml
 <dependency>
@@ -28,7 +36,10 @@ Or with gradle:
 implementation 'assaabloy.globalsolutions.axon.dynamodb:axon-dynamodb-spring-boot-autoconfigure:${project.version}'
 ```
 
-Spring Boot application configuration:
+
+### Configuring the DynamoDB Client
+
+To configure the DynamoDB client in your Spring Boot application, add the following bean definition:
 
 ```kotlin
 @Bean
@@ -51,8 +62,12 @@ fun dynamoClient(
 }
 ```
 
-This extension does not create its own DynamodDB tables. This is expected to be handled by the user.
-Refer to the test class `DynamoTableInitializer` for an example of how to create the tables.
+
+### Creating DynamoDB Tables
+
+This extension does not create its own DynamoDB tables. You will need to handle the creation of
+the required tables in your application. Refer to the test class DynamoTableInitializer for an
+example of how to create the tables.
 
 ## License
 This work is licensed under MIT License except the example project, which has been sourced from [axon-mongo-example][axon-mongo-example]
