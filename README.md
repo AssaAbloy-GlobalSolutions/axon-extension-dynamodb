@@ -16,6 +16,10 @@ might also benefit from this extension.
 
 ## Usage
 
+We have added a *-spring-boot-autoconfigure module to help you getting started in a spring setup. The guide below will
+assume you are using Spring. If you are not in a spring environment look at the code in `DynamoDbAutoConfiguration` for
+guidance on how to manually create the `EventStorageEngine` and the `TokenStore`.
+
 ### Prerequisites
 
 This extension require Spring Boot 3, and therefore a java 17 runtime.
@@ -40,38 +44,40 @@ Or with gradle:
 implementation 'assaabloy.globalsolutions.axon.dynamodb:axon-dynamodb-spring-boot-autoconfigure:${project.version}'
 ```
 
+### Configuring a DynamoDB Client
 
-### Configuring the DynamoDB Client
-
-To configure the DynamoDB client in your Spring Boot application, add the following bean definition:
+In order for the extension to work it needs a DynamoDB client available as a spring bean. To configure the DynamoDB
+client in your Spring Boot application, add the following bean definition:
 
 ```kotlin
 @Bean
-fun dynamoClient(
-    @Value("\${amazon.dynamodb.endpoint}")
-    dynamoEndpoint: String,
-    @Value("\${amazon.aws.region}")
-    region: String,
-): DynamoDbClient {
-    // Placeholder values for connecting to a locally running dynamodb container; 
-    // these properties are typically set with `-Daws.accessKeyId=... -DsecretAccessKey=...`
-    System.setProperty("aws.accessKeyId", "kid")
-    System.setProperty("aws.secretAccessKey", "sak")
-    System.setProperty("aws.sessionToken", "st")
-
- return DynamoDbClient.builder()
-  .region(Region.regions().first { it.id() == region })
-  .endpointOverride(URI.create(dynamoEndpoint))
-  .build()
-}
+fun dynamoClient(): DynamoDbClient =
+   DynamoDbClient.builder()
+      // your configuration...
+      .build()
 ```
+
+### Extension properties
+
+There are a few properties you can set to configure and customize the extension.
+
+1. `axon.dynamo.axon-storage-table-name`
+   - *Required*. Specifies the name of the table to use in DynamoDB. Both tokens and events are stored in the same
+     table.
+2. `axon.dynamo.claim-timeout`
+   - *Optional, default: 10s*. How often the token store will check for claim timeouts. More details about the token
+     claim mechanism can be found in the Axon documentation.
+3. `axon.dynamo.event-payload-package-prefix`
+   - *Optional, default: not used*. To save storage space (and cost) you can specify the packagename prefix where your
+     events resides. When saving events the storage engine will replace the prefix with a `*`. Beware that this can
+     cause issues (or save you) if you refactor your package structure.
 
 ### Creating DynamoDB Tables
 
-This extension does not create its own DynamoDB tables. You will need to handle the creation of
-the required tables in your application. Refer to the test class `DynamoTableInitializer` for an
-example of how to create the tables programmatically. Another option (and what we normally do) is to use e.g. a
-CloudFormation template to create the required tables.
+This extension does not create its own DynamoDB tables. You will need to handle the creation of the required tables in
+your application. Refer to the test class `DynamoTableInitializer` for an example of how to create the tables
+programmatically. Another option is to use a CloudFormation template, or AWS CLI (there is a script creating dynamo
+tables using the AWS CLI in the axon-dynamodb-example module) to create the required tables.
 
 ## Limitations
 

@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -30,7 +29,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import java.net.URI
-
 
 /**
  * Starting point.
@@ -46,11 +44,6 @@ fun main(args: Array<String>) {
 @EnableScheduling
 class DynamoDbAxonExampleApplication {
 
-//    @Autowired
-//    fun initializeTables(dynamoDbClient: DynamoDbClient) {
-//        DynamoTableInitializer.initTables(dynamoDbClient)
-//    }
-
     @Bean
     fun registerKotlinModule(): Module = KotlinModule
         .Builder()
@@ -59,7 +52,6 @@ class DynamoDbAxonExampleApplication {
 
     @Bean
     fun registerJavaTimeModule(): Module = JavaTimeModule()
-
 }
 
 @org.springframework.context.annotation.Configuration
@@ -67,7 +59,7 @@ class DynamoDbDemoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     fun dynamoClient(
-        @Value("\${amazon.dynamodb.endpoint}")
+        @Value("\${aws.dynamodb.endpoint}")
         dynamoEndpoint: String,
         @Value("\${aws.region}")
         region: String,

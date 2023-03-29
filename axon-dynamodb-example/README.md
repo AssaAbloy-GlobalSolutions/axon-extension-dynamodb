@@ -4,7 +4,8 @@ This is an example SpringBoot application using the Axon DynamoDB extension. It 
 
 ![overview](application-overview.png)
 
-This example project has been adapted from the example project in axon [mongo extension][mongo extension]
+This example project has been adapted from the example project in
+axon [mongo extension](https://github.com/AxonFramework/extension-mongo)
 
 ## How to run
 
@@ -18,7 +19,7 @@ To start a local instance of DynamoDB with axon event store table (in axon-examp
 docker-compose -f ./axon-dynamodb-example/docker-compose.yaml up -d  
 ```
 
-Next, run the application:
+Next, build the application:
 
 ```bash
 mvn clean package -f ./axon-dynamodb-example

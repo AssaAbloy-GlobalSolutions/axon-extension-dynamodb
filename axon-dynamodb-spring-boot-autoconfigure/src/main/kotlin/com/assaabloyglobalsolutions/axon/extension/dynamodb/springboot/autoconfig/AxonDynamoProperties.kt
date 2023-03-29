@@ -10,12 +10,10 @@ import java.time.Duration
 @ConfigurationProperties("axon.dynamo")
 @Validated
 data class AxonDynamoProperties(
-    @get:NotNull
     var eventPayloadPackagePrefix: String?,
 
     @get:NotNull
     var axonStorageTableName: String?,
 
-    @get:NotNull
     var claimTimeout: Duration?,
 )

@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import java.time.Duration
 import java.util.*
 
 @AutoConfiguration
@@ -25,6 +26,8 @@ import java.util.*
     "org.axonframework.springboot.autoconfig.JdbcAutoConfiguration"
 ])
 open class DynamoDbAutoConfiguration(private val axonDynamoProperties: AxonDynamoProperties) {
+
+    val defaultClaimTimeout: Duration = Duration.ofSeconds(10)
 
     @Bean
     @ConditionalOnMissingBean
@@ -56,7 +59,11 @@ open class DynamoDbAutoConfiguration(private val axonDynamoProperties: AxonDynam
         serializer: Serializer,
         dynamoClient: DynamoDbClient
     ): TokenStore {
-        return DynamoTokenStore(dynamoClient, axonDynamoProperties.axonStorageTableName!!, claimTimeout = axonDynamoProperties.claimTimeout!!)
+        return DynamoTokenStore(
+            dynamoClient,
+            axonDynamoProperties.axonStorageTableName!!,
+            claimTimeout = axonDynamoProperties.claimTimeout ?: defaultClaimTimeout
+        )
     }
 
 }
