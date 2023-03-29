@@ -1,14 +1,18 @@
-## Axon DynamoDB Extension
+## Axon Framework - DynamoDB Extension
 
-The Axon Framework DynamoDB Extension extends the Axon Framework for building event-driven microservice systems.
-Based on Domain Driven Design, CQRS, and Event Sourcing principles, this extension provides essential building
-blocks such as Aggregate factories, Repositories, Command, Event and Query Buses, and an Event Store.
+This repository adds an extension to the Axon Framework that uses DynamoDB for persistence, serving as
+an `EventStorageEngine` (for use with an `EventStore`) and
+a `TokenStore`. [Axon Framework](https://developer.axoniq.io/axon-framework/overview) is a framework for building
+evolutionary, event-driven microservice systems based on the principles of Domain-Driven Design (DDD), Command-Query
+Responsibility Separation (CQRS), and Event Sourcing.
 
-This DynamoDB extension streamlines infrastructure management, letting you concentrate on your business
-functionality. The repository adds an extension to the Axon Framework that uses DynamoDB for persistence,
-serving as an EventStorageEngine (for use with an EventStore) and TokenStore. Enjoy a well-structured
-application with the Axon Framework DynamoDB Extension.
-
+At ASSA ABLOY Global Solutions we build cloud-based services to support our various business areas. We have been using
+Event Sourcing and CQRS for a long time when building our services, and also the Axon Framework. We host all our
+services in AWS and wanted a light-weight and AWS native solution to data storage. DynamoDB is not a perfect fit for an
+event store, but we still see a lot of advantages with DynamoDB over e.g. an Aurora RDS instance. It is easier to
+manage, it has built in autoscaling of both performance and storage, it is cheaper, etc. We have managed to come up with
+an implementation using DynamoDB that we feel is stable and scalable enough for us to use internally, and hope others
+might also benefit from this extension.
 
 ## Usage
 
@@ -55,23 +59,46 @@ fun dynamoClient(
     System.setProperty("aws.secretAccessKey", "sak")
     System.setProperty("aws.sessionToken", "st")
 
-    return DynamoDbClient.builder()
-        .region(Region.regions().first { it.id() == region })
-        .endpointOverride(URI.create(dynamoEndpoint))
-        .build()
+ return DynamoDbClient.builder()
+  .region(Region.regions().first { it.id() == region })
+  .endpointOverride(URI.create(dynamoEndpoint))
+  .build()
 }
 ```
-
 
 ### Creating DynamoDB Tables
 
 This extension does not create its own DynamoDB tables. You will need to handle the creation of
-the required tables in your application. Refer to the test class DynamoTableInitializer for an
-example of how to create the tables.
+the required tables in your application. Refer to the test class `DynamoTableInitializer` for an
+example of how to create the tables programmatically. Another option (and what we normally do) is to use e.g. a
+CloudFormation template to create the required tables.
+
+## Limitations
+
+### Performance
+
+DynamoDB is not perfect fit for an Event Store. There is a challenge with keeping track of the global event sequence as
+Dynamo doesn't have support for sequences. When you have too many threads and services creating events at the same time
+you will eventually run in to issues where many threads allocate global indexes for the events they are about to store,
+and they commit their events out of order. The implementation will ensure that the global event sequence is maintained
+without duplicates, but threads allocating and storing events out of order will create gaps in the global event
+sequence. The Axon `EventStore` will handle these gaps gracefully, but you will eventually come to a point where
+performance will degrade significantly because there are too many gaps to handle.
+
+Make sure to test performance with your business cases to make sure the DynamoDB storage is handling the load you
+expect.
+
+### Functionality
+
+So far we have only implemented support for handling Events. None of the services where we use this extension has the
+need for snapshots, so there is not yet support for snapshots in the DynamoStorageEngine. Implementing support for
+snapshots should however be fairly simple should you need them.
 
 ## License
-This work is licensed under MIT License except the example project, which has been sourced from [axon-mongo-example][axon-mongo-example]
+
+This work is licensed under MIT License except the example project, which has been sourced
+from [axon-mongo-example][axon-mongo-example]
 and falls under the Apache License 2.0. These files can be identified by the Apache License header. Apache 2.0 license
 can be found under [axon-example/LICENSE.axon](axon-example/LICENSE.axon).
 
- [axon-mongo-example]: https://github.com/AxonFramework/extension-mongo
+[axon-mongo-example]: https://github.com/AxonFramework/extension-mongo
