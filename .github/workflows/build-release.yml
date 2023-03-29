@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: maven build
+    name: release next version
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
@@ -28,5 +28,5 @@ jobs:
       - name: prepare release
         run: mvn -B release:prepare -P release
 
-      - name: Publish to Apache Maven Central
+      - name: finalize release and deploy
         run: mvn -B release:perform -P release
