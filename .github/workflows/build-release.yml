@@ -20,13 +20,22 @@ jobs:
           distribution: 'corretto'
           cache: 'maven'
           server-id: 'sonatype-nexus'
-          server-username: ${{ secrets.DEPLOY_USERNAME }}
-          server-password: ${{ secrets.DEPLOY_PASSWORD }}
+          server-username: DEPLOY_USERNAME
+          server-password: DEPLOY_PASSWORD
+          # only entry that can resolve the secret directly
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          gpg-passphrase: GPG_PASSPHRASE
 
       - name: prepare release
         run: mvn -B release:prepare -P release
+        env:
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: finalize release and deploy
         run: mvn -B release:perform -P release
+        env:
+          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
