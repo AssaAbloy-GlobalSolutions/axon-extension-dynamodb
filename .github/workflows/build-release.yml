@@ -25,12 +25,12 @@ jobs:
           # only entry that can resolve the secret directly
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
+
+      - name: release and deploy
         env:
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
           DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: release and deploy
         run: |
           git config --global user.name "magnetar-team"
           git config --global user.email "magnetar-team@users.noreply.github.com"
