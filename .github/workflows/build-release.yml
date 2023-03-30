@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v3
+        token: ${{ github.token }}
 
       - name: setup jdk and maven
         uses: actions/setup-java@v3
@@ -34,5 +35,8 @@ jobs:
         run: |
           git config --global user.name "magnetar-team"
           git config --global user.email "magnetar-team@users.noreply.github.com"
+          git remote remove origin
+          git remote add origin https://${{ secrets.GITHUB_TOKEN }}@github.com/AssaAbloy-GlobalSolutions/axon-extension-dynamodb.git
+          git fetch
           mvn -B release:prepare -P release
           mvn -B release:perform -P release
