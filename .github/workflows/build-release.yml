@@ -34,5 +34,5 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          mvn -B release:prepare -P release
-          mvn -B release:perform -P release
+          mvn -B release:prepare -P release -Dproject.scm.developerConnection=scm:git:https://${{ secrets.GITHUB_TOKEN }}@github.com/AssaAbloy-GlobalSolutions/axon-extension-dynamodb.git
+          mvn -B release:perform -P release -Dproject.scm.developerConnection=scm:git:https://${{ secrets.GITHUB_TOKEN }}@github.com/AssaAbloy-GlobalSolutions/axon-extension-dynamodb.git
