@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <name>Axon extension DynamoDB parent</name>
+    <url>https://github.com/AssaAbloy-GlobalSolutions/axon-extension-dynamodb</url>
     <description>Axon DynamoDB extension</description>
 
 
