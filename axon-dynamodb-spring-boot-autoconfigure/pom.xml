@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
         <artifactId>axon-dynamodb-parent</artifactId>
-        <version>0.9.8</version>
+        <version>0.9.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>axon-dynamodb-spring-boot-autoconfigure</artifactId>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
             <artifactId>axon-dynamodb</artifactId>
-            <version>0.9.8</version>
+            <version>0.9.9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
