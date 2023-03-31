@@ -5,7 +5,7 @@
 
     <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
     <artifactId>axon-dynamodb-parent</artifactId>
-    <version>0.9.4</version>
+    <version>0.9.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Axon extension DynamoDB parent</name>
@@ -332,7 +332,7 @@
         <url>https://github.com/AssaAbloy-GlobalSolutions/axon-extension-dynamodb</url>
         <connection>scm:git:git@github.com:AssaAbloy-GlobalSolutions/axon-extension-dynamodb.git</connection>
         <developerConnection>scm:git:git@github.com:AssaAbloy-GlobalSolutions/axon-extension-dynamodb.git</developerConnection>
-        <tag>axon-dynamodb-0.9.4</tag>
+        <tag>0.1.0</tag>
     </scm>
 
 </project>
