@@ -1,9 +1,6 @@
 name: 🚀 release and deploy
 on:
-  workflow_dispatch:    # for debugging
-  push:
-    tags:
-    - 'axon-dynamodb-*' # tagged by maven-release-plugin
+  workflow_dispatch
 
 jobs:
   build:
@@ -12,8 +9,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: setup jdk and maven
         uses: actions/setup-java@v3
