@@ -1,5 +1,10 @@
 ## Axon Framework - DynamoDB Extension
 
+
+
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent/badge.png)
+
 This repository adds an extension to the Axon Framework that uses DynamoDB for persistence, serving as
 an `EventStorageEngine` (for use with an `EventStore`) and
 a `TokenStore`. [Axon Framework](https://developer.axoniq.io/axon-framework/overview) is a framework for building
