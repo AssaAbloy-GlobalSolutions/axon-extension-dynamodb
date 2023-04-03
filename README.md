@@ -41,7 +41,7 @@ Maven:
 Or with gradle:
 
 ```groovy
-implementation 'assaabloy.globalsolutions.axon.dynamodb:axon-dynamodb-spring-boot-autoconfigure:${axon-dynamodb.version}'
+implementation 'assaabloy.globalsolutions.axon.dynamodb:axon-dynamodb-spring-boot-autoconfigure:${project.version}'
 ```
 
 ### Configuring a DynamoDB Client
