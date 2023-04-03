@@ -3,7 +3,7 @@
 
 
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent/badge.png)](https://maven-badges.herokuapp.com/maven-central/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent/badge.png)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent/badge.png)](https://mvnrepository.com/artifact/com.assaabloyglobalsolutions.axon.dynamodb/axon-dynamodb-parent)
 
 This repository adds an extension to the Axon Framework that uses DynamoDB for persistence, serving as
 an `EventStorageEngine` (for use with an `EventStore`) and
