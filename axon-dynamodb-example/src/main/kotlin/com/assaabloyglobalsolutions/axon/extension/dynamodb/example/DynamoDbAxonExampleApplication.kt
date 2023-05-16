@@ -16,16 +16,30 @@
 
 package com.assaabloyglobalsolutions.axon.extension.dynamodb.example
 
+import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.AccountBalanceQuery
+import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.CreateBankAccountCommand
+import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.DepositMoneyCommand
 import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import org.axonframework.commandhandling.gateway.CommandGateway
+import org.axonframework.messaging.responsetypes.ResponseTypes
+import org.axonframework.queryhandling.QueryGateway
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
+import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import java.net.URI
@@ -53,6 +67,53 @@ class DynamoDbAxonExampleApplication {
     @Bean
     fun registerJavaTimeModule(): Module = JavaTimeModule()
 }
+
+@RestController
+@RequestMapping("/bank")
+class SimpleController(
+    private val commandGateway: CommandGateway,
+    private val queryGateway: QueryGateway
+) {
+
+    @PostMapping("/account", produces = [APPLICATION_JSON_VALUE])
+    fun createAccount(): ResponseEntity<CreateAccountResponse> {
+        val accountId = java.util.UUID.randomUUID().toString()
+
+        commandGateway.send<String>(
+            CreateBankAccountCommand(
+                bankAccountId = accountId,
+                overdraftLimit = 1000
+            )
+        )
+
+        return ResponseEntity.ok(CreateAccountResponse(accountId))
+    }
+
+    @PostMapping("/account/deposit", consumes = [APPLICATION_JSON_VALUE])
+    fun deposit(request: DepositRequest): ResponseEntity<Unit> {
+        commandGateway.send<Any?>(
+            DepositMoneyCommand(
+                bankAccountId = request.accountId,
+                amountOfMoney = request.amount
+            )
+        )
+        return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/account", consumes = [APPLICATION_JSON_VALUE], produces = [APPLICATION_JSON_VALUE])
+    fun balance(request: BalanceRequest): ResponseEntity<BalanceResponse> =
+        queryGateway.query(
+            AccountBalanceQuery(
+                bankAccountId = request.accountId
+            ),
+            ResponseTypes.instanceOf(Long::class.java)
+        ).let { amount -> ResponseEntity.ok(BalanceResponse(request.accountId, amount.get())) }
+}
+
+data class CreateAccountResponse(val accountId: String)
+data class DepositRequest(val accountId: String, val amount: Long)
+data class BalanceRequest(val accountId: String)
+data class BalanceResponse(val accountId: String, val balance: Long)
 
 @org.springframework.context.annotation.Configuration
 class DynamoDbDemoConfiguration {
