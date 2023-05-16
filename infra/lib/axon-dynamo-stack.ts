@@ -7,7 +7,6 @@ import {ContainerImage} from "aws-cdk-lib/aws-ecs";
 import {Repository} from "aws-cdk-lib/aws-ecr";
 import {AttributeType, BillingMode, Table, TableEncryption} from "aws-cdk-lib/aws-dynamodb";
 import {Effect, PolicyStatement} from "aws-cdk-lib/aws-iam";
-import {HealthCheck} from "aws-cdk-lib/aws-autoscaling";
 
 export class AxonDynamoStack extends cdk.Stack {
 
@@ -27,7 +26,8 @@ export class AxonDynamoStack extends cdk.Stack {
                 desiredCount: 5,
                 taskImageOptions: {
                     image: ContainerImage.fromEcrRepository(ecrRepo, "axon-dynamodb"),
-                    environment: {}
+                    environment: {},
+                    containerPort: 8080
                 }
             }
         );
