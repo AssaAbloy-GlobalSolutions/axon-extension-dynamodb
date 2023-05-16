@@ -31,8 +31,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.http.MediaType
-import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.EnableScheduling
@@ -42,7 +40,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
-import java.net.URI
 
 /**
  * Starting point.
@@ -66,6 +63,13 @@ class DynamoDbAxonExampleApplication {
 
     @Bean
     fun registerJavaTimeModule(): Module = JavaTimeModule()
+}
+
+@RestController
+@RequestMapping("/health")
+class HealthController {
+    @GetMapping()
+    fun health(): ResponseEntity<Any> = ResponseEntity.ok().build()
 }
 
 @RestController
@@ -126,13 +130,13 @@ class DynamoDbDemoConfiguration {
         region: String,
     ): DynamoDbClient {
         // Placeholder values required by dynamodb client
-        System.setProperty("aws.accessKeyId", "local")
-        System.setProperty("aws.secretAccessKey", "local")
-        System.setProperty("aws.sessionToken", "local")
+//        System.setProperty("aws.accessKeyId", "local")
+//        System.setProperty("aws.secretAccessKey", "local")
+//        System.setProperty("aws.sessionToken", "local")
 
         return DynamoDbClient.builder()
             .region(Region.regions().first { it.id() == region })
-            .endpointOverride(URI.create(dynamoEndpoint))
+//            .endpointOverride(URI.create(dynamoEndpoint))
             .build()
     }
 }
