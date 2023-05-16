@@ -34,10 +34,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
@@ -94,7 +91,7 @@ class SimpleController(
     }
 
     @PostMapping("/account/deposit", consumes = [APPLICATION_JSON_VALUE])
-    fun deposit(request: DepositRequest): ResponseEntity<Unit> {
+    fun deposit(@RequestBody request: DepositRequest): ResponseEntity<Unit> {
         commandGateway.send<Any?>(
             DepositMoneyCommand(
                 bankAccountId = request.accountId,
@@ -105,7 +102,7 @@ class SimpleController(
     }
 
     @GetMapping("/account", consumes = [APPLICATION_JSON_VALUE], produces = [APPLICATION_JSON_VALUE])
-    fun balance(request: BalanceRequest): ResponseEntity<BalanceResponse> =
+    fun balance(@RequestBody request: BalanceRequest): ResponseEntity<BalanceResponse> =
         queryGateway.query(
             AccountBalanceQuery(
                 bankAccountId = request.accountId
