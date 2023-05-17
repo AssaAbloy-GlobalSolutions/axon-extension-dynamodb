@@ -72,6 +72,16 @@
             <version>1.0.12</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>magnetar.fulliautomatix.axonspringglue</groupId>
+            <artifactId>axon-spring-glue</artifactId>
+            <version>2.0.735</version>
+        </dependency>
+        <dependency>
+            <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
+            <artifactId>axon-dynamodb</artifactId>
+            <version>0.9.9</version>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>-->
@@ -123,4 +133,11 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>gs.magnetar.releases</id>
+            <name>Team Magnetar Releases</name>
+            <url>https://nexus.tools.dev.assaabloyglobalsolutions.net/repository/gs-magnetar-releases/</url>
+        </repository>
+    </repositories>
 </project>
