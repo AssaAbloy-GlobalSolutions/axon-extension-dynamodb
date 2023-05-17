@@ -16,27 +16,24 @@
 
 package com.assaabloyglobalsolutions.axon.extension.dynamodb.example
 
-import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.AccountBalanceQuery
-import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.CreateBankAccountCommand
-import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.DepositMoneyCommand
 import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import org.axonframework.commandhandling.gateway.CommandGateway
-import org.axonframework.messaging.responsetypes.ResponseTypes
-import org.axonframework.queryhandling.QueryGateway
+import org.axonframework.config.Configuration
+import org.axonframework.config.EventProcessingConfigurer
+import org.axonframework.eventhandling.TrackingEventProcessorConfiguration
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
-import org.springframework.http.ResponseEntity
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.web.bind.annotation.*
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import java.util.concurrent.TimeUnit
 
 /**
  * Starting point.
@@ -60,80 +57,32 @@ class DynamoDbAxonExampleApplication {
 
     @Bean
     fun registerJavaTimeModule(): Module = JavaTimeModule()
-}
 
-@RestController
-@RequestMapping("/health")
-class HealthController {
-    @GetMapping()
-    fun health(): ResponseEntity<Any> = ResponseEntity.ok().build()
-}
-
-@RestController
-@RequestMapping("/bank")
-class SimpleController(
-    private val commandGateway: CommandGateway,
-    private val queryGateway: QueryGateway
-) {
-
-    @PostMapping("/account", produces = [APPLICATION_JSON_VALUE])
-    fun createAccount(): ResponseEntity<CreateAccountResponse> {
-        val accountId = java.util.UUID.randomUUID().toString()
-
-        commandGateway.send<String>(
-            CreateBankAccountCommand(
-                bankAccountId = accountId,
-                overdraftLimit = 1000
-            )
-        )
-
-        return ResponseEntity.ok(CreateAccountResponse(accountId))
+    @Autowired
+    fun configure(config: EventProcessingConfigurer) {
+        config.registerTrackingEventProcessor(
+            "BalanceProjection",
+            Configuration::eventStore
+        ) {
+            TrackingEventProcessorConfiguration
+                .forParallelProcessing(4)
+                .andBatchSize(100)
+                // This will cause axon to extend claim every 5 seconds when there are no events coming in
+                .andEventAvailabilityTimeout(5, TimeUnit.SECONDS)
+        }
     }
 
-    @PostMapping("/account/deposit", consumes = [APPLICATION_JSON_VALUE])
-    fun deposit(@RequestBody request: DepositRequest): ResponseEntity<Unit> {
-        commandGateway.send<Any?>(
-            DepositMoneyCommand(
-                bankAccountId = request.accountId,
-                amountOfMoney = request.amount
-            )
-        )
-        return ResponseEntity.ok().build()
-    }
-
-    @GetMapping("/account", consumes = [APPLICATION_JSON_VALUE], produces = [APPLICATION_JSON_VALUE])
-    fun balance(@RequestBody request: BalanceRequest): ResponseEntity<BalanceResponse> =
-        queryGateway.query(
-            AccountBalanceQuery(
-                bankAccountId = request.accountId
-            ),
-            ResponseTypes.instanceOf(Long::class.java)
-        ).let { amount -> ResponseEntity.ok(BalanceResponse(request.accountId, amount.get())) }
+    @Bean
+    @ConditionalOnMissingBean
+    fun dynamoClient(
+        @Value("\${aws.region}")
+        region: String,
+    ): DynamoDbClient = DynamoDbClient.builder()
+        .region(Region.regions().first { it.id() == region })
+        .build()
 }
 
 data class CreateAccountResponse(val accountId: String)
 data class DepositRequest(val accountId: String, val amount: Long)
 data class BalanceRequest(val accountId: String)
 data class BalanceResponse(val accountId: String, val balance: Long)
-
-@org.springframework.context.annotation.Configuration
-class DynamoDbDemoConfiguration {
-    @Bean
-    @ConditionalOnMissingBean
-    fun dynamoClient(
-        @Value("\${aws.dynamodb.endpoint}")
-        dynamoEndpoint: String,
-        @Value("\${aws.region}")
-        region: String,
-    ): DynamoDbClient {
-        // Placeholder values required by dynamodb client
-//        System.setProperty("aws.accessKeyId", "local")
-//        System.setProperty("aws.secretAccessKey", "local")
-//        System.setProperty("aws.sessionToken", "local")
-
-        return DynamoDbClient.builder()
-            .region(Region.regions().first { it.id() == region })
-//            .endpointOverride(URI.create(dynamoEndpoint))
-            .build()
-    }
-}

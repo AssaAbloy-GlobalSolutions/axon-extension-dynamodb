@@ -24,13 +24,12 @@ import org.axonframework.commandhandling.gateway.CommandGateway
 import org.axonframework.messaging.responsetypes.ResponseTypes
 import org.axonframework.queryhandling.QueryGateway
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Component
 import java.util.*
 
 /**
  * Bank client sending scheduled commands.
  */
-@Component
+// @Component
 class BankClient(
     private val commandGateway: CommandGateway,
     private val queryGateway: QueryGateway
