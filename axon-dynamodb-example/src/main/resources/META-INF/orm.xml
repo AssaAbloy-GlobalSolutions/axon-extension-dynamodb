@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+        xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+        version="2.0">
+
+    <mapped-superclass access="FIELD" metadata-complete="false"
+                       class="org.axonframework.eventhandling.AbstractSequencedDomainEventEntry">
+        <attributes>
+            <id name="globalIndex">
+                <generated-value strategy="SEQUENCE" generator="cfx_event_sequence"/>
+                <sequence-generator name="cfx_event_sequence" sequence-name="cfx_event_sequence" allocation-size="1"/>
+            </id>
+        </attributes>
+    </mapped-superclass>
+
+    <entity class="org.axonframework.eventsourcing.eventstore.jpa.DomainEventEntry">
+        <attribute-override name="payload">
+            <column name="payload" column-definition="json"/>
+        </attribute-override>
+        <attribute-override name="metaData">
+            <column name="meta_data" column-definition="json"/>
+        </attribute-override>
+    </entity>
+
+    <entity class="org.axonframework.eventsourcing.eventstore.jpa.SnapshotEventEntry">
+        <attribute-override name="payload">
+            <column name="payload" column-definition="json"/>
+        </attribute-override>
+        <attribute-override name="metaData">
+            <column name="meta_data" column-definition="json"/>
+        </attribute-override>
+    </entity>
+
+    <entity class="org.axonframework.eventhandling.tokenstore.jpa.TokenEntry">
+        <attribute-override name="token">
+            <column name="token" column-definition="json"/>
+        </attribute-override>
+    </entity>
+
+    <entity class="org.axonframework.modelling.saga.repository.jpa.SagaEntry">
+        <attribute-override name="serializedSaga">
+            <column name="serialized_saga" column-definition="json"/>
+        </attribute-override>
+    </entity>
+
+</entity-mappings>

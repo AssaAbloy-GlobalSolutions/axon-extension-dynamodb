@@ -1,8 +1,8 @@
-FROM base-alpine-java-local as build
+FROM base-alpine-java as build
 COPY axon-dynamodb-example/target/axon-dynamodb-example.jar /
 RUN jar -xf axon-dynamodb-example.jar
 
-FROM base-alpine-java-local
+FROM base-alpine-java
 COPY --from=build BOOT-INF/lib /app/lib
 COPY --from=build META-INF /app/META-INF
 COPY --from=build BOOT-INF/classes /app
