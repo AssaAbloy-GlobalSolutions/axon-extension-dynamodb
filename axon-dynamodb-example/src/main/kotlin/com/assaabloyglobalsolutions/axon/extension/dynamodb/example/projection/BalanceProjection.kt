@@ -15,12 +15,12 @@
 
 package com.assaabloyglobalsolutions.axon.extension.dynamodb.example.projection
 
-import com.assaabloyglobalsolutions.axon.extension.dynamodb.DynamoAttribute
+//import com.assaabloyglobalsolutions.axon.extension.dynamodb.DynamoAttribute
 import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.AccountBalanceQuery
 import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.BankAccountCreatedEvent
 import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.MoneyDepositedEvent
 import com.assaabloyglobalsolutions.axon.extension.dynamodb.example.api.MoneyWithdrawnEvent
-import com.assaabloyglobalsolutions.axon.extension.dynamodb.nullableLong
+//import com.assaabloyglobalsolutions.axon.extension.dynamodb.nullableLong
 import mu.KLogging
 import org.axonframework.config.ProcessingGroup
 import org.axonframework.eventhandling.EventHandler
@@ -33,103 +33,106 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
 @ProcessingGroup("BalanceProjection")
 @Component
-class BalanceProjection(val balanceRepository: BalanceRepository) {
+class BalanceProjection(
+//    val balanceRepository: BalanceRepository
+) {
 
     companion object : KLogging()
 
     @EventHandler
     fun on(event: BankAccountCreatedEvent) {
         logger.info { "account created: ${event.id}" }
-        balanceRepository.createBankAccount(event.id)
+//        balanceRepository.createBankAccount(event.id)
     }
 
     @EventHandler
     fun on(event: MoneyDepositedEvent) {
         logger.info { "money added to: ${event.bankAccountId}" }
         // sum old amount plus new one
-        balanceRepository.depositMoney(event.bankAccountId, event.amount)
+//        balanceRepository.depositMoney(event.bankAccountId, event.amount)
     }
 
     @EventHandler
     fun on(event: MoneyWithdrawnEvent) {
         logger.info { "money subtracted to: ${event.bankAccountId}" }
         // sum old amount minus new one
-        balanceRepository.withdrawMoney(event.bankAccountId, event.amount)
+//        balanceRepository.withdrawMoney(event.bankAccountId, event.amount)
     }
 
     @QueryHandler
     fun on(query: AccountBalanceQuery): Long? {
-        return balanceRepository.checkBalance(query.bankAccountId)
+//        return balanceRepository.checkBalance(query.bankAccountId)
+        return 0
     }
 
 }
 
-@Primary
-@Component
-class DynamoBalanceRepository(
-    @Value("\${dynamodb.balance-table.name}")
-    private val tableName: String,
-    private val client: DynamoDbClient,
-) : BalanceRepository {
-
-    val bankAccountId = DynamoAttribute.String("aid")
-    val balance = DynamoAttribute.String("b")
-
-    override fun createBankAccount(bankAccountId: String) {
-        client.putItem{
-            it.tableName(tableName)
-                .item(
-                    mapOf(
-                        this.bankAccountId.valuePair(bankAccountId)
-                    )
-                )
-        }
-    }
-
-    override fun depositMoney(bankAccountId: String, amount: Long) {
-        client.updateItem {
-            it.tableName(tableName)
-                .key(
-                    mapOf(
-                        this.bankAccountId.valuePair(bankAccountId)
-                    )
-                )
-                .updateExpression("ADD $balance :amount")
-                .expressionAttributeValues(
-                    mapOf(
-                        ":amount" to AttributeValue.fromN(amount.toString())
-                    )
-                )
-        }
-    }
-
-    override fun withdrawMoney(bankAccountId: String, amount: Long) {
-        client.updateItem {
-            it.tableName(tableName)
-                .key(
-                    mapOf(
-                        this.bankAccountId.valuePair(bankAccountId)
-                    )
-                )
-                .updateExpression("ADD $balance :amount")
-                .expressionAttributeValues(
-                    mapOf(
-                        ":amount" to AttributeValue.fromN(amount.unaryMinus().toString())
-                    )
-                )
-        }
-    }
-
-    override fun checkBalance(bankAccountId: String): Long? = client.getItem {
-        it.tableName(tableName)
-            .key(
-                mapOf(
-                    this.bankAccountId.valuePair(bankAccountId)
-                )
-            )
-    }.item()?.get("b").nullableLong()
-
-}
+//@Primary
+//@Component
+//class DynamoBalanceRepository(
+//    @Value("\${dynamodb.balance-table.name}")
+//    private val tableName: String,
+//    private val client: DynamoDbClient,
+//) : BalanceRepository {
+//
+//    val bankAccountId = DynamoAttribute.String("aid")
+//    val balance = DynamoAttribute.String("b")
+//
+//    override fun createBankAccount(bankAccountId: String) {
+//        client.putItem{
+//            it.tableName(tableName)
+//                .item(
+//                    mapOf(
+//                        this.bankAccountId.valuePair(bankAccountId)
+//                    )
+//                )
+//        }
+//    }
+//
+//    override fun depositMoney(bankAccountId: String, amount: Long) {
+//        client.updateItem {
+//            it.tableName(tableName)
+//                .key(
+//                    mapOf(
+//                        this.bankAccountId.valuePair(bankAccountId)
+//                    )
+//                )
+//                .updateExpression("ADD $balance :amount")
+//                .expressionAttributeValues(
+//                    mapOf(
+//                        ":amount" to AttributeValue.fromN(amount.toString())
+//                    )
+//                )
+//        }
+//    }
+//
+//    override fun withdrawMoney(bankAccountId: String, amount: Long) {
+//        client.updateItem {
+//            it.tableName(tableName)
+//                .key(
+//                    mapOf(
+//                        this.bankAccountId.valuePair(bankAccountId)
+//                    )
+//                )
+//                .updateExpression("ADD $balance :amount")
+//                .expressionAttributeValues(
+//                    mapOf(
+//                        ":amount" to AttributeValue.fromN(amount.unaryMinus().toString())
+//                    )
+//                )
+//        }
+//    }
+//
+//    override fun checkBalance(bankAccountId: String): Long? = client.getItem {
+//        it.tableName(tableName)
+//            .key(
+//                mapOf(
+//                    this.bankAccountId.valuePair(bankAccountId)
+//                )
+//            )
+//    }.item()?.get("b").nullableLong()
+//
+//}
 
 interface BalanceRepository {
 

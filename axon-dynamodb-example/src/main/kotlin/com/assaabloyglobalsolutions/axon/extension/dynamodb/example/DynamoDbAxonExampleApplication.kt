@@ -54,24 +54,24 @@ class DynamoDbAxonExampleApplication {
     fun registerJavaTimeModule(): Module = JavaTimeModule()
 }
 
-@org.springframework.context.annotation.Configuration
-class DynamoDbDemoConfiguration {
-    @Bean
-    @ConditionalOnMissingBean
-    fun dynamoClient(
-        @Value("\${aws.dynamodb.endpoint}")
-        dynamoEndpoint: String,
-        @Value("\${aws.region}")
-        region: String,
-    ): DynamoDbClient {
-        // Placeholder values required by dynamodb client
-        System.setProperty("aws.accessKeyId", "local")
-        System.setProperty("aws.secretAccessKey", "local")
-        System.setProperty("aws.sessionToken", "local")
-
-        return DynamoDbClient.builder()
-            .region(Region.regions().first { it.id() == region })
-            .endpointOverride(URI.create(dynamoEndpoint))
-            .build()
-    }
-}
+//@org.springframework.context.annotation.Configuration
+//class DynamoDbDemoConfiguration {
+//    @Bean
+//    @ConditionalOnMissingBean
+//    fun dynamoClient(
+//        @Value("\${aws.dynamodb.endpoint}")
+//        dynamoEndpoint: String,
+//        @Value("\${aws.region}")
+//        region: String,
+//    ): DynamoDbClient {
+//        // Placeholder values required by dynamodb client
+//        System.setProperty("aws.accessKeyId", "local")
+//        System.setProperty("aws.secretAccessKey", "local")
+//        System.setProperty("aws.sessionToken", "local")
+//
+//        return DynamoDbClient.builder()
+//            .region(Region.regions().first { it.id() == region })
+//            .endpointOverride(URI.create(dynamoEndpoint))
+//            .build()
+//    }
+//}

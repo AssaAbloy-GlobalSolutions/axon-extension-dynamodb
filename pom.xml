@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <kotlin.version>1.8.10</kotlin.version>
+        <kotlin.version>1.8.21</kotlin.version>
         <dokka.version>1.7.20</dokka.version>
 
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
@@ -35,7 +35,7 @@
 
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
-        <axon.version>4.7.3</axon.version>
+        <axon.version>4.7.4</axon.version>
         <spring.boot.version>3.0.5</spring.boot.version>
     </properties>
 
