@@ -48,6 +48,12 @@ sealed class DynamoAttribute<T>(val name: kotlin.String) {
         override fun toAttributeValue(field: Set<kotlin.String>): AttributeValue =
             field.map(AttributeValue::fromS).let(AttributeValue::fromL)
     }
+    
+    class ByteArrayList(name: kotlin.String) : DynamoAttribute<List<kotlin.ByteArray>>(name) {
+        override fun toDomain(value: AttributeValue?): List<kotlin.ByteArray>? = value?.l()?.map { it.bytes() }?.toList()
+        override fun toAttributeValue(field: List<kotlin.ByteArray>): AttributeValue =
+            field.map { AttributeValue.fromB(SdkBytes.fromByteArray(it)) }.let(AttributeValue::fromL)
+    }
 }
 
 operator fun Map<String, AttributeValue>.contains(attribute: DynamoAttribute<*>): Boolean {
