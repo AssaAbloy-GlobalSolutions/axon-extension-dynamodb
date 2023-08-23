@@ -16,11 +16,35 @@ internal class DynamoTokenStoreTest : DynamoTest() {
     fun `fetch token happy path`() {
         val nodeOneStore = DynamoTokenStore(client, AXON_STORAGE, uuid())
 
+        val noToken = nodeOneStore.fetchToken("TestProcessor", 0)
+        assertEquals(GapAwareTrackingToken(0, emptyList()), noToken)
+
         val token = GapAwareTrackingToken(12, listOf(8, 11))
         nodeOneStore.storeToken(token, "TestProcessor", 0)
 
         val tokenFromStore = nodeOneStore.fetchToken("TestProcessor", 0)
         assertEquals(token, tokenFromStore)
+    }
+
+    @Test
+    fun `fetch should claim the token`() {
+        val nodeOneStore = DynamoTokenStore(client, AXON_STORAGE, uuid())
+        val nodeTwoStore = DynamoTokenStore(client, AXON_STORAGE, uuid())
+
+        val noToken = nodeOneStore.fetchToken("TestProcessor", 0)
+        assertEquals(GapAwareTrackingToken(0, emptyList()), noToken)
+        assertThrows<UnableToClaimTokenException> {
+            nodeTwoStore.fetchToken("TestProcessor", 0)
+        }
+
+        val token = GapAwareTrackingToken(12, listOf(8, 11))
+        nodeOneStore.storeToken(token, "TestProcessor", 0)
+
+        val tokenFromStore = nodeOneStore.fetchToken("TestProcessor", 0)
+        assertEquals(token, tokenFromStore)
+        assertThrows<UnableToClaimTokenException> {
+            nodeTwoStore.fetchToken("TestProcessor", 0)
+        }
     }
 
     @Test
