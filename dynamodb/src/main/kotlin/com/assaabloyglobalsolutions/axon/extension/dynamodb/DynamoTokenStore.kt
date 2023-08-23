@@ -89,30 +89,7 @@ class DynamoTokenStore(
      * could be claim
      */
     override fun fetchToken(processorName: String, segment: Int): TrackingToken = measureTimedValue {
-        val result = client.getItem {
-            it.tableName(tableName).key(
-                mapOf(
-                    PROCESSOR_NAME.valuePair("t:$processorName"),
-                    SEGMENT.valuePair(segment)
-                )
-            )
-        }
-
-        val trackingToken = result?.takeIf { it.hasItem() }
-            ?.item()
-            ?.takeIf { it.isNotEmpty() }
-            ?.also {
-                val owner = OWNER.nullableFrom(it)
-                val timestamp = TIMESTAMP.from(it)
-
-                if (owner != null && owner != nodeId && claimNotExpired(timestamp)) {
-                    logger.debug { "Fetch $processorName[$segment] from node $nodeHash failed, owned by #${owner.hashCode()}" }
-                    throw UnableToClaimTokenException("Unable to claim token $processorName[$segment], it is owned by $owner")
-                }
-            }
-            ?.resolveTrackingToken()
-
-        trackingToken ?: GapAwareTrackingToken(0, mutableListOf())
+        claim(processorName, segment, null) ?: GapAwareTrackingToken(0, mutableListOf())
     }.also {
         logger.debug {
             "Fetch $processorName[$segment] from node $nodeHash " +
