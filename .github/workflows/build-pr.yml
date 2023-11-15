@@ -7,6 +7,9 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,3 +32,4 @@ jobs:
 
       - name: Build
         run: mvn -B verify
+
