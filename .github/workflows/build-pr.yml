@@ -19,11 +19,6 @@ jobs:
           distribution: 'corretto'
           cache: 'maven'
           server-id: 'sonatype-nexus'
-          server-username: DEPLOY_USERNAME
-          server-password: DEPLOY_PASSWORD
-          # only entry that can resolve the secret directly
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
 
       - name: Cache Maven packages
         uses: actions/cache@v3
