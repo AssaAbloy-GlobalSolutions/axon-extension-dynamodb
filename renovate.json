@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "platformAutomerge": true,
+  "repositories": [
+    "AssaAbloy-GlobalSolutions/axon-extension-dynamodb"
+  ],
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
