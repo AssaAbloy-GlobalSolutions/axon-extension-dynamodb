@@ -1,4 +1,4 @@
-name: ⬆️ axon dynamodb extensions
+name: ⬆️ renovate dependencies
 on:
   workflow_dispatch
 
