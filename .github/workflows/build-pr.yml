@@ -1,0 +1,36 @@
+name: 🏗 build pull request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build and analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: setup jdk and maven
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+          cache: 'maven'
+          server-id: 'sonatype-nexus'
+          server-username: DEPLOY_USERNAME
+          server-password: DEPLOY_PASSWORD
+          # only entry that can resolve the secret directly
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build
+        run: mvn -B verify
