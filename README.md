@@ -1,6 +1,6 @@
 ## Axon Framework - DynamoDB Extension
 
-This repository adds an extension to the Axon Framework that uses DynamoDB for persistence, serving as
+This repository adds an extension to the Axon Framework that uses DynamoDB for persistence, serving as 
 an `EventStorageEngine` (for use with an `EventStore`) and
 a `TokenStore`. [Axon Framework](https://developer.axoniq.io/axon-framework/overview) is a framework for building
 evolutionary, event-driven microservice systems based on the principles of Domain-Driven Design (DDD), Command-Query
