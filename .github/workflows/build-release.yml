@@ -39,10 +39,5 @@ jobs:
           git config user.email github-actions@github.com
           
           mvn -B release:prepare -P release
-          export RELEASE_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           mvn -B release:perform -P release
-          
-          git pull
-          git checkout main
-          git merge axon-dynamodb-${RELEASE_VERSION}
-          git push
+        
