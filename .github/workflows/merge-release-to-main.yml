@@ -6,6 +6,9 @@ on:
     tags:
     - 'axon-dynamodb-*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: merge tag to main
