@@ -14,6 +14,8 @@ internal class EventSequenceStoreTest : DynamoTest() {
     fun `sequence should be created if missing`() {
         val eventSequenceStore = EventSequenceStore(client, DynamoTableInitializer.AXON_STORAGE)
         assertThat(eventSequenceStore.readGlobalEventSequence(2)).isEqualTo(1L..2L)
+        assertThat(eventSequenceStore.getGlobalEventSequence()).isEqualTo(2)
+        assertThat(eventSequenceStore.readGlobalEventSequence(2)).isEqualTo(3L..4L)
     }
 
     @Test
