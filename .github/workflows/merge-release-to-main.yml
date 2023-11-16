@@ -6,8 +6,7 @@ on:
     tags:
     - 'axon-dynamodb-*'
 
-permissions:
-  contents: write
+permissions: all
 
 jobs:
   build:
