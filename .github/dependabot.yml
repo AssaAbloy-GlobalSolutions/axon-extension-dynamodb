@@ -8,6 +8,6 @@ updates:
   - package-ecosystem: "maven"
     directory: "/" # Location of package manifests
     target-branch: "development"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 11
     schedule:
       interval: "weekly"
