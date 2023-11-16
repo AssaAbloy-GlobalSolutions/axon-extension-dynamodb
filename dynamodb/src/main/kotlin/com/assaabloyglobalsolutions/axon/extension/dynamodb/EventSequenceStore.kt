@@ -45,6 +45,22 @@ class EventSequenceStore(private val client: DynamoDbClient, private val tableNa
         }.let { it + 1..it + size }
     }
 
+    fun getGlobalEventSequence(): Long {
+        synchronized(this) {
+            if (!isInitialized.get()) {
+                initializeSequence()
+                isInitialized.set(true)
+            }
+        }
+
+        return client.getItem {
+            it.tableName(tableName)
+                .key(sequenceKey)
+        }.let {
+            SEQUENCE_VALUE.from(it.item())
+        }
+    }
+
     private fun initializeSequence() {
         val getSequenceResponse = client.getItem {
             it.tableName(tableName).key(sequenceKey)

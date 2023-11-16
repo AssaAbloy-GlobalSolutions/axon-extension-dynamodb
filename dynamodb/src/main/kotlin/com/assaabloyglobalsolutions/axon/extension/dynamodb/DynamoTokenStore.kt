@@ -13,7 +13,6 @@ import software.amazon.awssdk.services.dynamodb.model.ReturnValue
 import java.lang.management.ManagementFactory
 import java.time.Clock
 import java.time.Duration
-import java.time.Instant
 import java.util.*
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
@@ -50,7 +49,7 @@ class DynamoTokenStore(
 
     override fun storeToken(trackingToken: TrackingToken?, processorName: String, segment: Int) {
         measureTimedValue {
-            claim(processorName, segment, trackingToken)
+            claim(processorName, segment, trackingToken, false)
         }.also {
             logger.debug {
                 "Store token for $processorName[$segment] from node $nodeHash " +
@@ -70,12 +69,9 @@ class DynamoTokenStore(
         }
     }
 
-    /**
-     * Extend a claim already held by the node, run about once per second when the application is not producing events
-     */
     override fun extendClaim(processorName: String, segment: Int) {
         measureTimedValue {
-            claim(processorName, segment, null)
+            claim(processorName, segment, null, false)
         }.also {
             logger.debug {
                 "Extend claim $processorName[$segment] from node $nodeHash " +
@@ -86,10 +82,10 @@ class DynamoTokenStore(
 
     /**
      * Seems to be mainly used for processor/segments not owned by this node, to check if there is anything that
-     * could be claim
+     * could be claimed
      */
     override fun fetchToken(processorName: String, segment: Int): TrackingToken = measureTimedValue {
-        claim(processorName, segment, null) ?: GapAwareTrackingToken(0, mutableListOf())
+        claim(processorName, segment, null, true) ?: GapAwareTrackingToken(0, mutableListOf())
     }.also {
         logger.debug {
             "Fetch $processorName[$segment] from node $nodeHash " +
@@ -126,14 +122,11 @@ class DynamoTokenStore(
         return false
     }
 
-    private fun claimNotExpired(timestamp: Long): Boolean {
-        return Instant.ofEpochMilli(timestamp).plus(claimTimeout).isAfter(clock.instant())
-    }
-
     private fun claim(
         processorName: String,
         segment: Int,
-        trackingToken: TrackingToken?
+        trackingToken: TrackingToken?,
+        considerClaimTimeout: Boolean = false
     ): TrackingToken? {
         try {
             val updateFields = mutableMapOf(
@@ -146,16 +139,25 @@ class DynamoTokenStore(
                 updateFields += TRACKING_TOKEN_CLASS.valuePair(trackingToken.javaClass)
             }
 
-            val result = client.updateItem {
-                it.returnValues(ReturnValue.ALL_OLD).tableName(tableName)
-                    .conditionExpression("attribute_not_exists($OWNER) or contains($OWNER, :nodeId) or $TIMESTAMP < :time")
+            val expressionAttributeValues = mutableMapOf(":nodeId" to stringAttributeValue(nodeId))
+            expressionAttributeValues += updateFields.mapKeys { ":${it.key}" }
+
+            val conditionalExpression = when (considerClaimTimeout) {
+                true -> {
+                    expressionAttributeValues += ":time" to numberAttributeValue((clock.instant() - claimTimeout).toEpochMilli())
+                    "attribute_not_exists($OWNER) or contains($OWNER, :nodeId) or $TIMESTAMP < :time"
+                }
+
+                false -> "attribute_not_exists($OWNER) or contains($OWNER, :nodeId)"
+            }
+
+            val result = client.updateItem { request ->
+                request.returnValues(ReturnValue.ALL_OLD)
+                    .tableName(tableName)
+                    .conditionExpression(conditionalExpression)
                     .updateExpression(updateFields.map { "${it.key} = :${it.key}" }.joinToString(prefix = "SET "))
-                    .expressionAttributeValues(
-                        mapOf(
-                            ":nodeId" to stringAttributeValue(nodeId),
-                            ":time" to numberAttributeValue((clock.instant() - claimTimeout).toEpochMilli())
-                        ) + updateFields.mapKeys { ":${it.key}" }
-                    ).key(
+                    .expressionAttributeValues(expressionAttributeValues)
+                    .key(
                         mapOf(
                             PROCESSOR_NAME.valuePair("t:$processorName"),
                             SEGMENT.valuePair(segment)
@@ -179,13 +181,8 @@ class DynamoTokenStore(
         try {
             client.updateItem {
                 it.tableName(tableName)
-                    .conditionExpression("attribute_not_exists($OWNER) or contains($OWNER, :nodeId) or $TIMESTAMP < :time")
-                    .expressionAttributeValues(
-                        mapOf(
-                            ":nodeId" to stringAttributeValue(nodeId),
-                            ":time" to numberAttributeValue(clock.instant().minus(claimTimeout).toEpochMilli())
-                        )
-                    )
+                    .conditionExpression("attribute_not_exists($OWNER) or contains($OWNER, :nodeId)")
+                    .expressionAttributeValues(mapOf(":nodeId" to stringAttributeValue(nodeId)))
                     .key(
                         mapOf(
                             PROCESSOR_NAME.valuePair("t:$processorName"),

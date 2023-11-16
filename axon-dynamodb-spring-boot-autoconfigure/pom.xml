@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
         <artifactId>axon-dynamodb-parent</artifactId>
-        <version>0.9.9</version>
+        <version>0.13.0</version>
     </parent>
 
     <artifactId>axon-dynamodb-spring-boot-autoconfigure</artifactId>
@@ -24,12 +24,12 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb</artifactId>
-            <version>2.20.30</version>
+            <version>2.21.24</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.14.2</version>
+            <version>2.16.0</version>
         </dependency>
         <dependency>
             <groupId>org.axonframework</groupId>
@@ -44,7 +44,7 @@
         <dependency>
             <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
             <artifactId>axon-dynamodb</artifactId>
-            <version>0.9.9</version>
+            <version>0.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

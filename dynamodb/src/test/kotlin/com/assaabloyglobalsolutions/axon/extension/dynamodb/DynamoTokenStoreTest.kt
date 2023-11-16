@@ -27,7 +27,7 @@ internal class DynamoTokenStoreTest : DynamoTest() {
     }
 
     @Test
-    fun `fetch should claim the token`() {
+    fun `fetch token should claim segment when new tracking token is created`() {
         val nodeOneStore = DynamoTokenStore(client, AXON_STORAGE, uuid())
         val nodeTwoStore = DynamoTokenStore(client, AXON_STORAGE, uuid())
 
@@ -36,14 +36,24 @@ internal class DynamoTokenStoreTest : DynamoTest() {
         assertThrows<UnableToClaimTokenException> {
             nodeTwoStore.fetchToken("TestProcessor", 0)
         }
+    }
+
+    @Test
+    fun `fetch should claim the token`() {
+        val nodeOneStore = DynamoTokenStore(client, AXON_STORAGE, uuid(), Duration.ofMillis(500))
+        val nodeTwoStore = DynamoTokenStore(client, AXON_STORAGE, uuid(), Duration.ofMillis(500))
 
         val token = GapAwareTrackingToken(12, listOf(8, 11))
         nodeOneStore.storeToken(token, "TestProcessor", 0)
 
-        val tokenFromStore = nodeOneStore.fetchToken("TestProcessor", 0)
-        assertEquals(token, tokenFromStore)
-        assertThrows<UnableToClaimTokenException> {
+        // Wait for nodeOne claim to timeout
+        assertEventually {
             nodeTwoStore.fetchToken("TestProcessor", 0)
+        }
+
+        // Make sure the claim was updated by the fetch from node two
+        assertThrows<UnableToClaimTokenException> {
+            nodeOneStore.fetchToken("TestProcessor", 0)
         }
     }
 
@@ -112,8 +122,7 @@ internal class DynamoTokenStoreTest : DynamoTest() {
         }
 
         assertEventually {
-            nodeTwoStore.storeToken(
-                GlobalSequenceTrackingToken(0),
+            nodeTwoStore.fetchToken(
                 "TestProcessor",
                 0
             )

@@ -3,7 +3,8 @@ package com.assaabloyglobalsolutions.axon.extension.dynamodb
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import org.axonframework.common.Assert
 import org.axonframework.common.jdbc.PersistenceExceptionResolver
@@ -18,12 +19,11 @@ import software.amazon.awssdk.services.dynamodb.model.*
 import java.io.ByteArrayOutputStream
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.*
 import java.util.stream.Stream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.math.min
-import kotlin.system.*
+import kotlin.system.measureTimeMillis
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
@@ -88,6 +88,8 @@ class DynamoStorageEngine private constructor(builder: Builder) : BatchingEventS
         logger.debug { "Read snapshot data for aggregate $aggregateId" }
         return Stream.empty()
     }
+
+    override fun createHeadToken() = GapAwareTrackingToken(sequenceStore.getGlobalEventSequence(), emptyList())
 
     override fun fetchDomainEvents(
         aggregateId: String,
