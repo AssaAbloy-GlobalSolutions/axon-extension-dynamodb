@@ -1,7 +1,6 @@
 name: 🥳 merge release to main
 
 on:
-  workflow_dispatch:
   push:
     tags:
     - 'axon-dynamodb-*'

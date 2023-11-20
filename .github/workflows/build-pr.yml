@@ -1,15 +1,18 @@
-name: 🏗 build pull request
+name: 🤖🏗 build pull request
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+
     permissions:
       pull-requests: write
       contents: write
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -32,4 +35,17 @@ jobs:
 
       - name: Build
         run: mvn -B verify
+
+  automerge:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3
+        with:
+          use-github-auto-merge: true
 
