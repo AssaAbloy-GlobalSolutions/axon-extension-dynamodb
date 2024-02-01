@@ -44,9 +44,9 @@ sealed class DynamoAttribute<T>(val name: kotlin.String) {
     }
 
     class StringSet(name: kotlin.String) : DynamoAttribute<Set<kotlin.String>>(name) {
-        override fun toDomain(value: AttributeValue?): Set<kotlin.String>? = value?.l()?.map { it.s() }?.toSet()
+        override fun toDomain(value: AttributeValue?): Set<kotlin.String>? = value?.ss()?.toSet()
         override fun toAttributeValue(field: Set<kotlin.String>): AttributeValue =
-            field.map(AttributeValue::fromS).let(AttributeValue::fromL)
+            field.toList().let(AttributeValue::fromSs)
     }
     
     class ByteArrayList(name: kotlin.String) : DynamoAttribute<List<kotlin.ByteArray>>(name) {
