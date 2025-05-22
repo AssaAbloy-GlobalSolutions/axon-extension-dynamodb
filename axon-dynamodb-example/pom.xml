@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.assaabloyglobalsolutions.axon.dynamodb</groupId>
         <artifactId>axon-dynamodb-parent</artifactId>
-        <version>0.11.0-SNAPSHOT</version>
+        <version>0.15.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>axon-dynamodb-example</artifactId>
