@@ -6,7 +6,7 @@ jobs:
   build:
     name: release next version
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/development'
+
     steps:
       - name: checkout code
         uses: actions/checkout@v3
