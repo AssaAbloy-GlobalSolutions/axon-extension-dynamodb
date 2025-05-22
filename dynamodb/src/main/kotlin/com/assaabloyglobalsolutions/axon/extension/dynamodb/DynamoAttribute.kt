@@ -5,9 +5,9 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 
 sealed class DynamoAttribute<T>(val name: kotlin.String) {
 
-    fun from(item: Map<kotlin.String, AttributeValue>) = toDomain(item[name])!!
+    open fun from(item: Map<kotlin.String, AttributeValue>) = toDomain(item[name])!!
     fun nullableFrom(item: Map<kotlin.String, AttributeValue>) = toDomain(item[name])
-    fun valuePair(field: T) = name to toAttributeValue(field)
+    open fun valuePair(field: T) = name to toAttributeValue(field)
 
     internal abstract fun toDomain(value: AttributeValue?): T?
     internal abstract fun toAttributeValue(field: T): AttributeValue
@@ -47,6 +47,14 @@ sealed class DynamoAttribute<T>(val name: kotlin.String) {
         override fun toDomain(value: AttributeValue?): Set<kotlin.String>? = value?.ss()?.toSet()
         override fun toAttributeValue(field: Set<kotlin.String>): AttributeValue =
             field.toList().let(AttributeValue::fromSs)
+
+        override fun valuePair(field: Set<kotlin.String>) =
+            field.ifEmpty { setOf("__EMPTY__") }
+                .let { name to toAttributeValue(it) }
+
+        override fun from(item: Map<kotlin.String, AttributeValue>) = toDomain(item[name])!!
+            .filter { it != "__EMPTY__" }
+            .toSet()
     }
     
     class ByteArrayList(name: kotlin.String) : DynamoAttribute<List<kotlin.ByteArray>>(name) {

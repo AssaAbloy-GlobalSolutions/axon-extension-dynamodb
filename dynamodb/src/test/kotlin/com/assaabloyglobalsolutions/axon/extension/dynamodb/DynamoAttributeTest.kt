@@ -1,6 +1,8 @@
 package com.assaabloyglobalsolutions.axon.extension.dynamodb
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.After
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import software.amazon.awssdk.services.dynamodb.model.*
@@ -25,6 +27,54 @@ class DynamoAttributeTest : DynamoTest() {
         }
 
         client.waiter().waitUntilTableExists { it.tableName(tableName) }
+    }
+
+    @AfterEach
+    fun shutdown() {
+        client.deleteTable { it.tableName(tableName) }
+        client.waiter().waitUntilTableNotExists { it.tableName(tableName) }
+    }
+
+    @Test
+    fun `empty set`() {
+        val stringSet = DynamoAttribute.StringSet("emptytest")
+        val key = "hash" to AttributeValue.fromS(uuid())
+
+        client.putItem { it.tableName(tableName).item(mapOf(key, stringSet.valuePair(setOf()))) }
+
+        val strings = client.getItem { it.tableName(tableName).key(mapOf(key)) }.item().let { stringSet.from(it) }
+
+        assertThat(strings).isEmpty()
+
+        client.updateItem {
+            it.tableName(tableName)
+                .key(mapOf(key))
+                .updateExpression("add $stringSet :toAdd")
+                .expressionAttributeValues(
+                    mapOf(
+                        ":toAdd" to AttributeValue.fromSs(listOf("three"))
+                    )
+                )
+        }
+
+        val added = client.getItem { it.tableName(tableName).key(mapOf(key)) }.item().let { stringSet.from(it) }
+
+        assertThat(added).containsOnly("three")
+
+        client.updateItem {
+            it.tableName(tableName)
+                .key(mapOf(key))
+                .updateExpression("delete $stringSet :toRemove")
+                .expressionAttributeValues(
+                    mapOf(
+                        ":toRemove" to AttributeValue.fromSs(listOf("three"))
+                    )
+                )
+        }
+
+        val removed = client.getItem { it.tableName(tableName).key(mapOf(key)) }.item().let { stringSet.from(it) }
+
+        assertThat(removed).isEmpty()
     }
 
     @Test
