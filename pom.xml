@@ -26,7 +26,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <kotlin.version>2.1.21</kotlin.version>
-        <dokka.version>1.9.20</dokka.version>
+        <dokka.version>2.0.0</dokka.version>
 
         <kotlin.compiler.jvmTarget>21</kotlin.compiler.jvmTarget>
         <maven.compiler.source>21</maven.compiler.source>
